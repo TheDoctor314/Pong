@@ -19,9 +19,11 @@ SDL_Color White = {255, 255, 255, 255};
 
 int player1score, player2score, servingPlayer, winningPlayer = 0, winningScore = 3;
 GameStates gameState;
+bool quit = false;
 
 bool init();
 void load();
+void gameProcessKeypress(SDL_Event *event);
 void draw();
 void update();
 void displayScore();
@@ -36,88 +38,10 @@ int main(int argc, char *argv[])
     }
     load();
 
-    bool quit = false;
-
     SDL_Event event;
     while(!quit)
     {
-        while( SDL_PollEvent(&event) )
-        {
-            if( (event.type == SDL_QUIT) )
-                quit = true;
-            else if( event.type == SDL_KEYDOWN )
-            {
-                switch (event.key.keysym.scancode) 
-                {
-                    case SDL_SCANCODE_ESCAPE:
-                        quit = true;
-                        break;
-                    case SDL_SCANCODE_RETURN:
-                        if( gameState == GAME_START)
-                            gameState = GAME_SERVE;
-                        else if( gameState == GAME_SERVE)
-                            gameState = GAME_PLAY;
-                        else if( gameState == GAME_DONE)
-                        {
-                            gameState = GAME_SERVE;
-                            ball->reset(0, 0);
-
-                            if(winningPlayer == 1)
-                                servingPlayer = 2;
-                            else
-                                servingPlayer = 1;
-                            
-                            player1score = 0;
-                            player2score = 0;
-                            
-                        }
-                        break;
-                    //player 1 movement
-                    case SDL_SCANCODE_W:
-                        paddle1->dy = -PADDLE_SPEED;
-                        break;
-                    case SDL_SCANCODE_S:
-                        paddle1->dy = PADDLE_SPEED;
-                        break;
-                    //player 2 movement
-                    case SDL_SCANCODE_UP:
-                        paddle2->dy = -PADDLE_SPEED;
-                        break;
-                    case SDL_SCANCODE_DOWN:
-                        paddle2->dy = PADDLE_SPEED;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else if(event.type == SDL_KEYUP)
-            {
-               switch (event.key.keysym.scancode) 
-                {
-                    //player 1 movement
-                    case SDL_SCANCODE_W:
-                        if( paddle1->dy< 0)
-                            paddle1->dy = 0;
-                        break;
-                    case SDL_SCANCODE_S:
-                        if( paddle1->dy > 0)
-                            paddle1->dy = 0;
-                        break;
-                    //player 2 movement
-                    case SDL_SCANCODE_UP:
-                        if( paddle2->dy < 0)
-                            paddle2->dy = 0;
-                        break;
-                    case SDL_SCANCODE_DOWN:
-                        if( paddle2->dy > 0)
-                            paddle2->dy = 0;
-                        break;
-                    default:
-                        break;
-                } 
-            }
-
-        }
+        gameProcessKeypress(&event);
         update();
         draw();
     }
@@ -176,6 +100,86 @@ void load()
 
     start.loadRenderedText("Press Enter to start", White);
     serve.loadRenderedText("Press Enter to serve", White);
+}
+void gameProcessKeypress(SDL_Event *event)
+{
+    while( SDL_PollEvent(event) )
+    {
+        if( (event->type == SDL_QUIT) )
+            quit = true;
+        else if( event->type == SDL_KEYDOWN )
+        {
+            switch (event->key.keysym.scancode) 
+            {
+                case SDL_SCANCODE_ESCAPE:
+                    quit = true;
+                    break;
+                case SDL_SCANCODE_RETURN:
+                    if( gameState == GAME_START)
+                        gameState = GAME_SERVE;
+                    else if( gameState == GAME_SERVE)
+                        gameState = GAME_PLAY;
+                    else if( gameState == GAME_DONE)
+                    {
+                        gameState = GAME_SERVE;
+                        ball->reset(0, 0);
+
+                        if(winningPlayer == 1)
+                            servingPlayer = 2;
+                        else
+                            servingPlayer = 1;
+                        
+                        player1score = 0;
+                        player2score = 0;
+                        
+                    }
+                    break;
+                //player 1 movement
+                case SDL_SCANCODE_W:
+                    paddle1->dy = -PADDLE_SPEED;
+                    break;
+                case SDL_SCANCODE_S:
+                    paddle1->dy = PADDLE_SPEED;
+                    break;
+                //player 2 movement
+                case SDL_SCANCODE_UP:
+                    paddle2->dy = -PADDLE_SPEED;
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    paddle2->dy = PADDLE_SPEED;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else if(event->type == SDL_KEYUP)
+        {
+            switch (event->key.keysym.scancode) 
+            {
+                //player 1 movement
+                case SDL_SCANCODE_W:
+                    if( paddle1->dy< 0)
+                        paddle1->dy = 0;
+                    break;
+                case SDL_SCANCODE_S:
+                    if( paddle1->dy > 0)
+                        paddle1->dy = 0;
+                    break;
+                //player 2 movement
+                case SDL_SCANCODE_UP:
+                    if( paddle2->dy < 0)
+                        paddle2->dy = 0;
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    if( paddle2->dy > 0)
+                        paddle2->dy = 0;
+                    break;
+                default:
+                    break;
+            } 
+        }
+
+    }
 }
 void draw()
 {
