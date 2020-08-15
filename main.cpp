@@ -19,7 +19,10 @@ SDL_Color White = {255, 255, 255, 255};
 SDL_Rect option_dot;
 SDL_Point pos1, pos2;
 
-int player1score, player2score, servingPlayer, winningPlayer = 0, winningScore = 3;
+#define COMPUTER 1
+#define HUMAN 0
+
+int player1score, player2score, servingPlayer, winningPlayer = 0, winningScore = 3, playerState;
 GameStates gameState;
 bool quit = false;
 
@@ -127,7 +130,10 @@ void gameProcessKeypress(SDL_Event *event)
                     break;
                 case SDL_SCANCODE_RETURN:
                     if( gameState == GAME_START)
+                    {
                         gameState = GAME_SERVE;
+                        playerState = (option_dot.y == pos1.y) ? COMPUTER : HUMAN;
+                    }
                     else if( gameState == GAME_SERVE)
                         gameState = GAME_PLAY;
                     else if( gameState == GAME_DONE)
@@ -159,6 +165,7 @@ void gameProcessKeypress(SDL_Event *event)
                 case SDL_SCANCODE_DOWN:
                     paddle2->dy = PADDLE_SPEED;
                     break;
+                //select options
                 case SDL_SCANCODE_1:
                     option_dot.x = pos1.x;
                     option_dot.y = pos1.y;
@@ -287,6 +294,14 @@ void update()
                 gameState = GAME_SERVE;
                 ball->reset(0, 0);
             }
+        }
+
+        if(playerState == COMPUTER)
+        {
+            if(ball->rect.y < (paddle2->rect.y + (paddle2->rect.h)/2))
+                paddle2->dy = -PADDLE_SPEED;
+            if(ball->rect.y > (paddle2->rect.y + (paddle2->rect.h)/2))
+                paddle2->dy = PADDLE_SPEED;
         }
     }
     else if (gameState == GAME_SERVE)
