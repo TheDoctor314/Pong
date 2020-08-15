@@ -298,10 +298,12 @@ void update()
 
         if(playerState == COMPUTER)
         {
-            if(ball->rect.y < (paddle2->rect.y + (paddle2->rect.h)/2))
-                paddle2->dy = -PADDLE_SPEED;
-            if(ball->rect.y > (paddle2->rect.y + (paddle2->rect.h)/2))
+            if(ball->rect.y > (paddle2->rect.y + paddle2->rect.h))
                 paddle2->dy = PADDLE_SPEED;
+            else if((ball->rect.y + ball->rect.h) < paddle2->rect.y)
+                paddle2->dy = -PADDLE_SPEED;
+            else
+                paddle2->dy = 0;            
         }
     }
     else if (gameState == GAME_SERVE)
