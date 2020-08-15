@@ -32,7 +32,7 @@ bool LTexture::loadRenderedText(std::string textureText, SDL_Color textColor)
 {
     free();
 
-    SDL_Surface *textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+    SDL_Surface *textSurface = TTF_RenderText_Blended_Wrapped(gFont, textureText.c_str(), textColor, 400);
     if( textSurface == NULL)
     {
         printf("Unable to render text. TTF error: %s", TTF_GetError());

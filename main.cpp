@@ -14,8 +14,10 @@ Ball* ball = 0;
 Paddle* paddle1 = 0;
 Paddle* paddle2 = 0;
 
-LTexture start, serve, score, done;
+LTexture start, players, serve, score, done;
 SDL_Color White = {255, 255, 255, 255};
+SDL_Rect option_dot;
+SDL_Point pos1, pos2;
 
 int player1score, player2score, servingPlayer, winningPlayer = 0, winningScore = 3;
 GameStates gameState;
@@ -100,6 +102,15 @@ void load()
 
     start.loadRenderedText("Press Enter to start", White);
     serve.loadRenderedText("Press Enter to serve", White);
+    players.loadRenderedText("1 Player\n2 Players", White);
+
+    pos1.x = (WINDOW_WIDTH - players.getWidth())/2;
+    pos2.x = pos1.x;
+    pos1.y = 200;
+    pos2.y = 250;
+    option_dot.w = option_dot.h = 12;
+    option_dot.x = pos1.x;
+    option_dot.y = pos1.y;
 }
 void gameProcessKeypress(SDL_Event *event)
 {
@@ -148,6 +159,14 @@ void gameProcessKeypress(SDL_Event *event)
                 case SDL_SCANCODE_DOWN:
                     paddle2->dy = PADDLE_SPEED;
                     break;
+                case SDL_SCANCODE_1:
+                    option_dot.x = pos1.x;
+                    option_dot.y = pos1.y;
+                    break;
+                case SDL_SCANCODE_2:
+                    option_dot.x = pos2.x;
+                    option_dot.y = pos2.y;
+                    break;
                 default:
                     break;
             }
@@ -194,6 +213,8 @@ void draw()
     if(gameState == GAME_START)
     {
         start.render( (WINDOW_WIDTH - start.getWidth())/2, 100 );
+        players.render( WINDOW_WIDTH/2, 200);
+        SDL_RenderFillRect(gRenderer, &option_dot);
     }
     else if (gameState == GAME_SERVE)
     {
