@@ -1,6 +1,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <bits/stdc++.h>
+#include <string>
+#include <stdio.h>
+#include <sstream>
+#include <iostream>
 #include "globals.h"
 #include "Ball.h"
 #include "Paddle.h"
